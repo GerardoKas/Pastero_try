@@ -1,0 +1,185 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang3082{\fonttbl{\f0\froman\fcharset0 Times New Roman;}{\f1\fswiss\fcharset0 Courier New;}{\f2\fnil\fcharset0 MS Sans Serif;}{\f3\fnil\fcharset2 Symbol;}}
+\viewkind4\uc1\pard\keepn\sb100\sa100\kerning36\b\f0\fs48 Adding an Event to a Form
+\par \pard\sb100\sa100\kerning0\b0\fs24 The following step by step procedure shows how you can create custom events for forms. To try this exercise, open a new Standard Exe project and do the following:
+\par \b To add an event to Form1\b0  
+\par \pard\fi-360\li720\sb100\sa100\tx720 On the \b Project\b0  menu, select \b Add Class Module\b0  to add a class module to the project. Place the following code in the \b Declarations\b0  section of Class1:
+\par \pard\li720\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Public Property Get Form1() As Form1
+\par    Set Form1 = mForm1
+\par End Property
+\par 
+\par Public Property Set Form1(ByVal NewForm1 As Form1)
+\par    Set mForm1 = NewForm1
+\par End Property
+\par \pard\li720\sb100\sa100\f0\fs24 If you're using Procedure View, the property procedures can't be viewed at the same time. Click the \b Full Module View\b0  button at the bottom left corner of the code window to switch to Full Module View. You can return to Procedure View by clicking the \b Procedure View\b0  button next to it. (Hover the mouse over the buttons to see which is which.)
+\par \pard\fi-360\li720\sb100\sa100\tx720 Add the following code to the \b Declarations\b0  section of Form1:
+\par \pard\li720\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Event Gong
+\par Private mc1 As Class1
+\par \pard\li720\sb100\sa100\f0\fs24 Now that Class1 has been created, it's possible to create a variable of type Class1. This procedure switches between Form1 and Class1 several times, because a step in one module requires first adding code to the other.
+\par \pard\fi-360\li720\sb100\sa100\tx720 Go back to Class1 and add the following code to the \b Declarations\b0  section.
+\par \pard\li720\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private WithEvents mForm1 As Form1
+\par \pard\li720\sb100\sa100\f0\fs24 As discussed in "Adding Events to a Class," the WithEvents keyword means this instance of Form1 is associated \i with events\i0 . Note that this step wasn't possible until the Gong event had been created.
+\par \pard\fi-360\li720\sb100\sa100\tx720 In the left-hand (\b Object\b0 ) drop down on Class1's \b Code\b0  window, select \b mForm1\b0  to get the event procedure for the Gong event. Add the following code to the event procedure:
+\par \pard\li720\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub mForm1_Gong()
+\par    MsgBox "Gong!"
+\par End Sub
+\par \pard\fi-360\li720\sb100\sa100\tx720\f0\fs24 Go back to Form1. In the \b Object\b0  drop down, select \b Form\b0 . In the right-hand (\b Procedure\b0 ) drop down, select \b Load\b0 . Add the following code to the event procedure:
+\par \pard\li720\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub Form_Load()
+\par    Set mc1 = New Class1
+\par    Set mc1.Form1 = Me
+\par End Sub
+\par \pard\li720\sb100\sa100\f0\fs24 The first line creates a Class1 object, and the second assigns to its Form1 property (created in step 1) a reference to Form1 (that is, Me \emdash  when you're in Form1's \b Code\b0  window, Me refers to Form1; when you're in Class1's \b Code\b0  window, Me refers to Class1).
+\par \pard\fi-360\li720\sb100\sa100\tx720 Put three text boxes on Form1. Use the \b Object\b0  and \b Procedure\b0  drop downs to select the \b Change\b0  event procedure for each control in turn, and place the same line of code in each:
+\par \pard\li720\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub Text1_Change()
+\par    RaiseEvent Gong
+\par End Sub
+\par \pard\li720\sb100\sa100\f0\fs24 Each time the contents of a text box change, the form's Gong event will be raised.
+\par \pard\fi-360\li720\sb100\sa100\tx720 Press F5 to run the project. Each time you type a character in one of the text boxes, the message box rings a bell. It's very annoying, but it shows how you can add an event to a form, and thus get notifications from several controls. 
+\par \pard\sb100\sa100 As shown in "Declaring and Raising Events," you can add arguments to events. For example, you might pass the name of the control \emdash  or better still, a reference to the control \emdash  to the receiver of the event.
+\par \pard\keepn\sb100\sa100\kerning36\b\fs48 Handling an Object's Events
+\par \pard\sb100\sa100\kerning0\b0\fs24 An object that raises events is called an \i event source. \i0 To handle the events raised by an event source, you can declare a variable of the object's class using the WithEvents keyword.
+\par This topic continues the Widget object example begun in "Declaring and Raising Events." To handle the PercentDone event of a Widget, place the following code in the Declarations section of Form1:
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Option Explicit
+\par Private WithEvents mWidget As Widget
+\par Private mblnCancel As Boolean
+\par \pard\sb100\sa100\f0\fs24 The WithEvents keyword specifies that the variable \f1\fs20 mWidget\f0\fs24  will be used to handle an object's events. You specify the kind of object by supplying the name of the class from which the object will be created.
+\par The variable \f1\fs20 mWidget\f0\fs24  is declared in the Declarations section of Form1 because WithEvents variables must be module-level variables. This is true regardless of the type of module you place them in.
+\par The variable \f1\fs20 mblnCancel\f0\fs24  will be used to cancel the LongTask method.
+\par \pard\keepn\sb100\sa100\b Limitations on WithEvents Variables
+\par \pard\sb100\sa100\b0 You should be aware of the following limitations on the use of WithEvents variables: 
+\par \pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100 A WithEvents variable cannot be a generic object variable. That is, you cannot declare it As Object \emdash  you must specify the class name when you declare the variable.
+\par {\pntext\f3\'B7\tab}
+\par {\pntext\f3\'B7\tab}You cannot declare a WithEvents variable As New. The event source object must be explicitly created and assigned to the WithEvents variable.
+\par {\pntext\f3\'B7\tab}
+\par {\pntext\f3\'B7\tab}You cannot declare WithEvents variables in a standard module. You can declare them only in class modules, form modules, and other modules that define classes.
+\par {\pntext\f3\'B7\tab}
+\par {\pntext\f3\'B7\tab}You cannot create arrays of WithEvents variables. 
+\par \pard\keepn\sb100\sa100\b\fs28 Writing Code to Handle an Event
+\par \pard\sb100\sa100\b0\fs24 As soon as you declare a variable WithEvents, the variable name appears in the left-hand drop down of the module's code window. When you select \f1\fs20 mWidget\f0\fs24 , the Widget class's events will appear in the right-hand drop down, as shown in Figure 9.9.
+\par \b Figure 9.9 An event associated with a WithEvents variable\b0 
+\par Selecting an event will display the corresponding event procedure, with the prefix \f1\fs20 mWidget_\f0\fs24 . All the event procedures associated with a WithEvents variable will have the variable name as a prefix. Add the following code to the mWidget_PercentDone event procedure.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub mWidget_PercentDone(ByVal Percent As _
+\par Single, Cancel As Boolean)
+\par    lblPercentDone.Caption = CInt(100 * Percent) & "%"
+\par    DoEvents
+\par    If mblnCancel Then Cancel = True
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 Whenever the PercentDone event is raised, the event procedure displays the percent complete in a Label control. The DoEvents statement allows the label to repaint, and also gives the user the opportunity to click the Cancel button. Add the following code for the Click event of the button whose caption is Cancel.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub Command2_Click()
+\par    mblnCancel = True
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 If the user clicks the Cancel button while LongTask is running, the Command2_Click event will be executed as soon as the DoEvents statement allows event processing to occur. The module-level variable \f1\fs20 mblnCancel\f0\fs24  is set to True, and the mWidget_PercentDone event then tests it and sets the ByRef Cancel argument to True.
+\par \pard\keepn\sb100\sa100\b\fs28 Connecting a WithEvents Variable to an Object
+\par \pard\sb100\sa100\b0\fs24 Form1 is all set up to handle a Widget object's events. All that remains is to find a Widget somewhere.
+\par When you declare a variable WithEvents at design time, there is no object associated with it. A WithEvents variable is just like any other object variable. You have to create an object and assign a reference to the object to the WithEvents variable. Add the following code to the Form_Load event procedure to create the Widget.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub Form_Load()
+\par    Set mWidget = New Widget
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 When the code above is executed, Visual Basic creates a Widget and connects its events to the event procedures associated with \f1\fs20 mWidget\f0\fs24 . From that point on, whenever the Widget raises its PercentDone event, the mWidget_PercentDone event procedure will be executed.
+\par To call the LongTask method, add the following code to the Click event of the button whose caption is Start Task.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 ' Start Task button.
+\par Private Sub Command1_Click()
+\par    mblnCancel = False
+\par    lblPercentDone.Caption = "0%"
+\par    lblPercentDone.Refresh
+\par 
+\par    Call mWidget.LongTask(14.4, 0.66)
+\par 
+\par    If Not mblnCancel Then lblPercentDone.Caption = 100
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 Before the LongTask method is called, the label that displays the percent complete must be initialized, and the module-level Boolean flag for canceling the method must be set to False.
+\par LongTask is called with a task duration of 14.4 seconds. The PercentDone event is to be raised once every two-thirds of a second. Each time the event is raised, the mWidget_PercentDone event procedure will be executed.
+\par When LongTask is done, \f1\fs20 mblnCancel\f0\fs24  is tested to see if LongTask ended normally, or if it stopped because \f1\fs20 mblnCancel\f0\fs24  was set to True. The percent complete is updated only for the former case.
+\par \pard\keepn\sb100\sa100\b\fs28 Running the Program
+\par \pard\sb100\sa100\b0\fs24 Press F5 to put the project in Run mode. Click the Start Task button. Each time the PercentDone event is raised, the label is updated with the percentage of the task that's complete. Click the Cancel button to stop the task. Notice that the appearance of the Cancel button doesn't change immediately when you click it. The Click event can't happen until the DoEvents statement allows event processing.
+\par You may find it instructive to run the program with F8, and step through the code a line at a time. You can clearly see how execution enters LongTask, and then re-enters Form1 briefly each time the PercentDone event is raised.
+\par What would happen if, while execution was back in Form1's code, the LongTask method was called again? Confusion, chaos, and eventually (if it happened every time the event was raised) a stack overflow.
+\par \pard\keepn\sb100\sa100\b\fs28 Handling Events for a Different Widget
+\par \pard\sb100\sa100\b0\fs24 You can cause the variable \f1\fs20 mWidget\f0\fs24  to handle events for a different Widget object by assigning a reference to the new Widget to \f1\fs20 mWidget\f0\fs24 . In fact, you can make the code in Command1 do this every time you click the button, by adding two lines of code:
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Set mWidget = New Widget      '<- New line.
+\par Call mWidget.LongTask(14.4, 0.66)
+\par Set mWidget = Nothing         '<- New line.
+\par \pard\sb100\sa100\f0\fs24 The code above creates a new Widget each time the button is pressed. As soon as the LongTask method completes, the reference to the Widget is released by setting \f1\fs20 mWidget\f0\fs24  to Nothing, and the Widget is destroyed.
+\par A WithEvents variable can only contain one object reference at a time, so if you assign a different Widget object to \f1\fs20 mWidget\f0\fs24 , the previous Widget object's events will no longer be handled. If \f1\fs20 mWidget\f0\fs24  is the only object variable containing a reference to the old Widget, the object will be destroyed.
+\par \b Note\b0  You can declare as many WithEvents variables as you need, but arrays of WithEvents variables are not supported.
+\par \pard\keepn\sb100\sa100\b\fs28 Terminating Event Handling for a WithEvents Variable
+\par \pard\sb100\sa100\b0\fs24 As long as there is a Widget object assigned to the variable \f1\fs20 mWidget\f0\fs24 , the event procedures associated with \f1\fs20 mWidget\f0\fs24  will be called whenever the Widget raises an event. To terminate event handling, you can set \f1\fs20 mWidget\f0\fs24  to Nothing, as shown in the following code fragment.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 ' Terminate event handling for mWidget.
+\par Set mWidget = Nothing
+\par \pard\sb100\sa100\f0\fs24 When a WithEvents variable is set to Nothing, Visual Basic disconnects the object's events from the event procedures associated with the variable.
+\par \b Important\b0  A WithEvents variable contains an object reference, just like any other object variable. This object reference counts toward keeping the object alive. When you are setting all references to an object to Nothing in order to destroy it, don't forget the variables you declared WithEvents.
+\par \b For More Information\b0  The event procedures associated with WithEvents variables look a lot like event procedures for controls on forms. "Comparing WithEvents to Control Events on Forms" discusses the similarities and differences.
+\par \pard\keepn\sb100\sa100\kerning36\b\fs48 Handling an Object's Events
+\par \pard\sb100\sa100\kerning0\b0\fs24 An object that raises events is called an \i event source. \i0 To handle the events raised by an event source, you can declare a variable of the object's class using the WithEvents keyword.
+\par This topic continues the Widget object example begun in "Declaring and Raising Events." To handle the PercentDone event of a Widget, place the following code in the Declarations section of Form1:
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Option Explicit
+\par Private WithEvents mWidget As Widget
+\par Private mblnCancel As Boolean
+\par \pard\sb100\sa100\f0\fs24 The WithEvents keyword specifies that the variable \f1\fs20 mWidget\f0\fs24  will be used to handle an object's events. You specify the kind of object by supplying the name of the class from which the object will be created.
+\par The variable \f1\fs20 mWidget\f0\fs24  is declared in the Declarations section of Form1 because WithEvents variables must be module-level variables. This is true regardless of the type of module you place them in.
+\par The variable \f1\fs20 mblnCancel\f0\fs24  will be used to cancel the LongTask method.
+\par \pard\keepn\sb100\sa100\b Limitations on WithEvents Variables
+\par \pard\sb100\sa100\b0 You should be aware of the following limitations on the use of WithEvents variables: 
+\par \pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100 A WithEvents variable cannot be a generic object variable. That is, you cannot declare it As Object \emdash  you must specify the class name when you declare the variable.
+\par {\pntext\f3\'B7\tab}
+\par {\pntext\f3\'B7\tab}You cannot declare a WithEvents variable As New. The event source object must be explicitly created and assigned to the WithEvents variable.
+\par {\pntext\f3\'B7\tab}
+\par {\pntext\f3\'B7\tab}You cannot declare WithEvents variables in a standard module. You can declare them only in class modules, form modules, and other modules that define classes.
+\par {\pntext\f3\'B7\tab}
+\par {\pntext\f3\'B7\tab}You cannot create arrays of WithEvents variables. 
+\par \pard\keepn\sb100\sa100\b\fs28 Writing Code to Handle an Event
+\par \pard\sb100\sa100\b0\fs24 As soon as you declare a variable WithEvents, the variable name appears in the left-hand drop down of the module's code window. When you select \f1\fs20 mWidget\f0\fs24 , the Widget class's events will appear in the right-hand drop down, as shown in Figure 9.9.
+\par \b Figure 9.9 An event associated with a WithEvents variable\b0 
+\par Selecting an event will display the corresponding event procedure, with the prefix \f1\fs20 mWidget_\f0\fs24 . All the event procedures associated with a WithEvents variable will have the variable name as a prefix. Add the following code to the mWidget_PercentDone event procedure.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub mWidget_PercentDone(ByVal Percent As _
+\par Single, Cancel As Boolean)
+\par    lblPercentDone.Caption = CInt(100 * Percent) & "%"
+\par    DoEvents
+\par    If mblnCancel Then Cancel = True
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 Whenever the PercentDone event is raised, the event procedure displays the percent complete in a Label control. The DoEvents statement allows the label to repaint, and also gives the user the opportunity to click the Cancel button. Add the following code for the Click event of the button whose caption is Cancel.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub Command2_Click()
+\par    mblnCancel = True
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 If the user clicks the Cancel button while LongTask is running, the Command2_Click event will be executed as soon as the DoEvents statement allows event processing to occur. The module-level variable \f1\fs20 mblnCancel\f0\fs24  is set to True, and the mWidget_PercentDone event then tests it and sets the ByRef Cancel argument to True.
+\par \pard\keepn\sb100\sa100\b\fs28 Connecting a WithEvents Variable to an Object
+\par \pard\sb100\sa100\b0\fs24 Form1 is all set up to handle a Widget object's events. All that remains is to find a Widget somewhere.
+\par When you declare a variable WithEvents at design time, there is no object associated with it. A WithEvents variable is just like any other object variable. You have to create an object and assign a reference to the object to the WithEvents variable. Add the following code to the Form_Load event procedure to create the Widget.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Private Sub Form_Load()
+\par    Set mWidget = New Widget
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 When the code above is executed, Visual Basic creates a Widget and connects its events to the event procedures associated with \f1\fs20 mWidget\f0\fs24 . From that point on, whenever the Widget raises its PercentDone event, the mWidget_PercentDone event procedure will be executed.
+\par To call the LongTask method, add the following code to the Click event of the button whose caption is Start Task.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 ' Start Task button.
+\par Private Sub Command1_Click()
+\par    mblnCancel = False
+\par    lblPercentDone.Caption = "0%"
+\par    lblPercentDone.Refresh
+\par 
+\par    Call mWidget.LongTask(14.4, 0.66)
+\par 
+\par    If Not mblnCancel Then lblPercentDone.Caption = 100
+\par End Sub
+\par \pard\sb100\sa100\f0\fs24 Before the LongTask method is called, the label that displays the percent complete must be initialized, and the module-level Boolean flag for canceling the method must be set to False.
+\par LongTask is called with a task duration of 14.4 seconds. The PercentDone event is to be raised once every two-thirds of a second. Each time the event is raised, the mWidget_PercentDone event procedure will be executed.
+\par When LongTask is done, \f1\fs20 mblnCancel\f0\fs24  is tested to see if LongTask ended normally, or if it stopped because \f1\fs20 mblnCancel\f0\fs24  was set to True. The percent complete is updated only for the former case.
+\par \pard\keepn\sb100\sa100\b\fs28 Running the Program
+\par \pard\sb100\sa100\b0\fs24 Press F5 to put the project in Run mode. Click the Start Task button. Each time the PercentDone event is raised, the label is updated with the percentage of the task that's complete. Click the Cancel button to stop the task. Notice that the appearance of the Cancel button doesn't change immediately when you click it. The Click event can't happen until the DoEvents statement allows event processing.
+\par You may find it instructive to run the program with F8, and step through the code a line at a time. You can clearly see how execution enters LongTask, and then re-enters Form1 briefly each time the PercentDone event is raised.
+\par What would happen if, while execution was back in Form1's code, the LongTask method was called again? Confusion, chaos, and eventually (if it happened every time the event was raised) a stack overflow.
+\par \pard\keepn\sb100\sa100\b\fs28 Handling Events for a Different Widget
+\par \pard\sb100\sa100\b0\fs24 You can cause the variable \f1\fs20 mWidget\f0\fs24  to handle events for a different Widget object by assigning a reference to the new Widget to \f1\fs20 mWidget\f0\fs24 . In fact, you can make the code in Command1 do this every time you click the button, by adding two lines of code:
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 Set mWidget = New Widget      '<- New line.
+\par Call mWidget.LongTask(14.4, 0.66)
+\par Set mWidget = Nothing         '<- New line.
+\par \pard\sb100\sa100\f0\fs24 The code above creates a new Widget each time the button is pressed. As soon as the LongTask method completes, the reference to the Widget is released by setting \f1\fs20 mWidget\f0\fs24  to Nothing, and the Widget is destroyed.
+\par A WithEvents variable can only contain one object reference at a time, so if you assign a different Widget object to \f1\fs20 mWidget\f0\fs24 , the previous Widget object's events will no longer be handled. If \f1\fs20 mWidget\f0\fs24  is the only object variable containing a reference to the old Widget, the object will be destroyed.
+\par \b Note\b0  You can declare as many WithEvents variables as you need, but arrays of WithEvents variables are not supported.
+\par \pard\keepn\sb100\sa100\b\fs28 Terminating Event Handling for a WithEvents Variable
+\par \pard\sb100\sa100\b0\fs24 As long as there is a Widget object assigned to the variable \f1\fs20 mWidget\f0\fs24 , the event procedures associated with \f1\fs20 mWidget\f0\fs24  will be called whenever the Widget raises an event. To terminate event handling, you can set \f1\fs20 mWidget\f0\fs24  to Nothing, as shown in the following code fragment.
+\par \pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 ' Terminate event handling for mWidget.
+\par Set mWidget = Nothing
+\par \pard\sb100\sa100\f0\fs24 When a WithEvents variable is set to Nothing, Visual Basic disconnects the object's events from the event procedures associated with the variable.
+\par \b Important\b0  A WithEvents variable contains an object reference, just like any other object variable. This object reference counts toward keeping the object alive. When you are setting all references to an object to Nothing in order to destroy it, don't forget the variables you declared WithEvents.
+\par \b For More Information\b0  The event procedures associated with WithEvents variables look a lot like event procedures for controls on forms. "Comparing WithEvents to Control Events on Forms" discusses the similarities and differences.
+\par \pard\f2\fs17 
+\par }

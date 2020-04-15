@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0078)http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/000688.html -->
+<HTML><HEAD><TITLE>[scintilla] TEXTRANGE object in VB</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="index.html" rel=Index><LINK href="mailto:scintilla-interest%40lyra.org" 
+rel=made>
+<META content=index,nofollow name=robots><LINK href="000686.html" 
+rel=Previous><LINK href="000690.html" rel=Next>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff>
+<H1>[scintilla] TEXTRANGE object in VB </H1><B>scintilla-interest@lyra.org 
+</B><A title="[scintilla] TEXTRANGE object in VB" 
+href="mailto:scintilla-interest@lyra.org">mailto:scintilla-interest@lyra.org</A><BR><I>Mon, 
+25 Feb 2002 15:16:32 -0600</I> 
+<P>
+<UL>
+  <LI>Previous message: <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/000686.html">[scintilla] 
+  TEXTRANGE object in VB </A>
+  <LI>Next message: <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/000690.html">[scintilla] 
+  [ scintilla-Feature Requests-522951 ] Possibility to mark a file as read-only 
+  </A>
+  <LI><B>Messages sorted by:</B> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/date.html#688">[ 
+  date ]</A> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/thread.html#688">[ 
+  thread ]</A> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/subject.html#688">[ 
+  subject ]</A> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/author.html#688">[ 
+  author ]</A> </LI></UL>
+<HR>
+<!--beginarticle--><PRE>This works with the RichEdit control:
+
+Const WM_USER = &amp;H400
+Const EM_GETTEXTRANGE = (WM_USER + 75)
+
+
+Private Type CHARRANGE   'cr
+    cpMin As Long
+    cpMax As Long
+End Type
+
+Private Type TEXTRANGE
+  chrg As CHARRANGE
+  lpstrText As String   ' allocated by caller, zero terminated by RichEdit
+End Type
+
+
+
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hw
+nd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
+
+
+Private Sub Command1_Click()
+
+    Dim cr As CHARRANGE
+    Dim tr As TEXTRANGE
+
+    cr.cpMin = 0
+    cr.cpMax = 511
+
+    tr.chrg = cr
+    tr.lpstrText = Space$(512)
+
+    Call SendMessage(RichTextBox1.hwnd, EM_GETTEXTRANGE, 0, tr)
+
+Debug.Print tr.lpstrText
+Debug.Print "============="
+
+End Sub
+
+</PRE><!--endarticle-->
+<HR>
+
+<P>
+<UL><!--threads-->
+  <LI>Previous message: <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/000686.html">[scintilla] 
+  TEXTRANGE object in VB </A>
+  <LI>Next message: <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/000690.html">[scintilla] 
+  [ scintilla-Feature Requests-522951 ] Possibility to mark a file as read-only 
+  </A>
+  <LI><B>Messages sorted by:</B> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/date.html#688">[ 
+  date ]</A> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/thread.html#688">[ 
+  thread ]</A> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/subject.html#688">[ 
+  subject ]</A> <A 
+  href="http://mailman.lyra.org/pipermail/scintilla-interest/2002-February/author.html#688">[ 
+  author ]</A> </LI></UL></BODY></HTML>

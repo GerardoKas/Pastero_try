@@ -1,0 +1,63 @@
+
+Function crearTitulo(texto As String)
+Dim tit As String
+'comprobar puntuacion no posible
+Exit Function
+If Form1.TheText.Tag = "Nodo" Then Exit Function
+If fileWasOpened = True Then
+    crearTitulo = basename(savedFilename)
+    Exit Function
+End If
+tit = Left(texto, maxTitle)
+tit = limpiar(tit)
+p = InStr(1, tit, Chr(13), vbBinaryCompare)
+If (p > 0) Then
+tit = Left(tit, p - 1)
+End If
+tit = changeBadChars(tit)
+
+fileName = tit & ".RichText"
+crearTitulo = fileName
+End Function
+
+Function limpiar(texto As String)
+'sacar enteres al principio y al final. por si el texto viene despues
+Dim cad As String
+cad = texto
+While (Left(cad, 2) = vbCrLf)
+cad = Right(cad, Len(cad) - 2)
+Wend
+While (Right(cad, 2) = vbCrLf)
+cad = Left(cad, Len(cad) - 2)
+Wend
+cad = Trim(cad)
+limpiar = cad
+End Function
+
+
+Function changeBadChars(texto As String)
+texto = Replace(texto, ":", "-")
+texto = Replace(texto, "?", "!")
+texto = Replace(texto, """", "'")
+texto = Replace(texto, "/", "-")
+texto = Replace(texto, "\", "-")
+texto = Replace(texto, "|", "-")
+texto = Replace(texto, "<", "[")
+texto = Replace(texto, ">", "]")
+texto = Replace(texto, "*", "·")
+changeBadChars = texto
+End Function
+
+(...)------------------------------------------------------------------------------------------
+
+
+Private Sub TheText_Change()
+'If TheText.Tag = "NoDo" Then Exit Sub
+'If TheText.Text = "" Then
+'txtTitulo = ""
+'tellSaved 2
+'Else
+'txtTitulo = crearTitulo(TheText.Text)
+'End If
+End Sub
+(...)

@@ -1,0 +1,186 @@
+Rich edit controls support almost all of the messages and notification messages used with multiline edit controls. Thus, applications that already use edit controls can be easily changed to use rich edit controls. Additional messages and notifications enable applications to access the functionality unique to rich edit controls. For information about edit controls, see Edit Controls. 
+....
+An application can send messages to a rich edit control to perform such operations as formatting text, printing, and saving. An application can process notification messages to monitor events in a rich edit control. For example, an application can process notifications to filter keyboard and mouse input, to permit or deny changes to protected text, or to resize the control as needed to fit its content.
+You create a rich edit control by using the CreateWindowEx function, specifying the "RichEdit" window class. You must call the LoadLibrary function to ensure that the RICHED32.DLL library is loaded before the rich edit control is created.
+
+Rich edit controls support most of the window styles used with edit controls as well as additional styles. You should specify the ES_MULTILINE window style if you want to allow more than one line of text in the control.
+(...)
+An application can send messages to a rich edit control to format characters and paragraphs and to retrieve formatting information. Paragraph formatting attributes include alignment, tabs, indents, and numbering. For characters, you can specify typeface, size, color, and effects such as bold, italic, and protected.
+
+You can apply paragraph formatting by using the EM_SETPARAFORMAT message. To determine the current paragraph formatting for the selected text, use the EM_GETPARAFORMAT message. The PARAFORMAT structure is used with both messages to specify paragraph formatting attributes.
+You can apply character formatting by using the EM_SETCHARFORMAT message. To determine the current character formatting for the selected text, you can use the EM_GETCHARFORMAT message. The CHARFORMAT structure is used with both messages to specify character attributes.
+
+You can also use EM_SETCHARFORMAT and EM_GETCHARFORMAT messages to set and retrieve the default character formatting, which is the formatting applied to any subsequently inserted characters. For example, if an application sets the default character formatting to bold and the user then types a character, that character is bold.
+The default character formatting is applied to newly inserted text only if the current selection is empty. Otherwise, the new text assumes the character formatting of the text it replaces. If the selection changes, the default character formatting changes to match the first character in the new selection.
+
+The protected character effect is unique in that it does not change the appearance of text. If the user attempts to modify protected text, a rich edit control sends its parent window an EN_PROTECTED notification message, allowing the parent window to allow or prevent the change. To receive this notification message, you must enable it by using the EM_SETEVENTMASK message.
+Foreground color is a character attribute, but background color is a property of the rich edit control. To set the background color, use the EM_SETBKGNDCOLOR message.
+(...)
+The CreateWindowEx function creates an overlapped, pop-up, or child window with an extended style; otherwise, this function is identical to the CreateWindow function. For more information about creating a window and for full descriptions of the other parameters of CreateWindowEx, see CreateWindow. 
+
+HWND CreateWindowEx(
+
+    DWORD dwExStyle,	// extended window style
+    LPCTSTR lpClassName,	// pointer to registered class name
+    LPCTSTR lpWindowName,	// pointer to window name
+    DWORD dwStyle,	// window style
+    int x,	// horizontal position of window
+    int y,	// vertical position of window
+    int nWidth,	// window width
+    int nHeight,	// window height
+    HWND hWndParent,	// handle to parent or owner window
+    HMENU hMenu,	// handle to menu, or child-window identifier
+    HINSTANCE hInstance,	// handle to application instance
+    LPVOID lpParam 	// pointer to window-creation data
+   );	
+ 
+
+Parameters
+
+dwExStyle
+
+Specifies the extended style of the window. This parameter can be one of the following values: 
+
+Style	Meaning
+WS_EX_ACCEPTFILES	Specifies that a window created with this style accepts drag-drop files.
+WS_EX_APPWINDOW	Forces a top-level window onto the taskbar when the window is minimized. 
+WS_EX_CLIENTEDGE	Specifies that a window has a border with a sunken edge.
+WS_EX_CONTEXTHELP	Includes a question mark in the title bar of the window. When the user clicks the question mark, the cursor changes to a question mark with a pointer. If the user then clicks a child window, the child receives a WM_HELP message. The child window should pass the message to the parent window procedure, which should call the WinHelp function using the HELP_WM_HELP command. The Help application displays a pop-up window that typically contains help for the child window.WS_EX_CONTEXTHELP cannot be used with the WS_MAXIMIZEBOX or WS_MINIMIZEBOX styles.
+WS_EX_CONTROLPARENT	Allows the user to navigate among the child windows of the window by using the TAB key.
+WS_EX_DLGMODALFRAME	Creates a window that has a double border; the window can, optionally, be created with a title bar by specifying the WS_CAPTION style in the dwStyle parameter.
+WS_EX_LEFT	Window has generic "left-aligned" properties. This is the default.
+WS_EX_LEFTSCROLLBAR	If the shell language is Hebrew, Arabic, or another language that supports reading order alignment, the vertical scroll bar (if present) is to the left of the client area. For other languages, the style is ignored and not treated as an error.
+WS_EX_LTRREADING	The window text is displayed using Left to Right reading-order properties. This is the default.
+WS_EX_MDICHILD	Creates an MDI child window.
+WS_EX_NOPARENTNOTIFY	Specifies that a child window created with this style does not send the WM_PARENTNOTIFY message to its parent window when it is created or destroyed.
+WS_EX_OVERLAPPEDWINDOW	Combines the WS_EX_CLIENTEDGE and WS_EX_WINDOWEDGE styles.
+WS_EX_PALETTEWINDOW	Combines the WS_EX_WINDOWEDGE, WS_EX_TOOLWINDOW, and WS_EX_TOPMOST styles.
+WS_EX_RIGHT	Window has generic "right-aligned" properties. This depends on the window class. This style has an effect only if the shell language is Hebrew, Arabic, or another language that supports reading order alignment; otherwise, the style is ignored and not treated as an error.
+WS_EX_RIGHTSCROLLBAR	Vertical scroll bar (if present) is to the right of the client area. This is the default.
+WS_EX_RTLREADING	If the shell language is Hebrew, Arabic, or another language that supports reading order alignment, the window text is displayed using Right to Left reading-order properties. For other languages, the style is ignored and not treated as an error.
+WS_EX_STATICEDGE	Creates a window with a three-dimensional border style intended to be used for items that do not accept user input.
+WS_EX_TOOLWINDOW	Creates a tool window; that is, a window intended to be used as a floating toolbar. A tool window has a title bar that is shorter than a normal title bar, and the window title is drawn using a smaller font. A tool window does not appear in the taskbar or in the dialog that appears when the user presses ALT+TAB.
+WS_EX_TOPMOST	Specifies that a window created with this style should be placed above all non-topmost windows and should stay above them, even when the window is deactivated. To add or remove this style, use the SetWindowPos function.
+WS_EX_TRANSPARENT	Specifies that a window created with this style is to be transparent. That is, any windows that are beneath the window are not obscured by the window. A window created with this style receives WM_PAINT messages only after all sibling windows beneath it have been updated.
+WS_EX_WINDOWEDGE	Specifies that a window has a border with a raised edge.
+ 
+
+Using the WS_EX_RIGHT style for static or edit controls has the same effect as using the SS_RIGHT or ES_RIGHT style, respectively. Using this style with button controls has the same effect as using BS_RIGHT and BS_RIGHTBUTTON styles.
+
+lpClassName
+
+Points to a null-terminated string or is an integer atom. If lpClassName is an atom, it must be a global atom created by a previous call to GlobalAddAtom. The atom, a 16-bit value less than 0xC000, must be in the low-order word of lpClassName; the high-order word must be zero. 
+If lpClassName is a string, it specifies the window class name. The class name can be any name registered with the RegisterClass function or any of the predefined control-class names. 
+
+lpWindowName
+
+Points to a null-terminated string that specifies the window name. 
+
+dwStyle
+
+Specifies the style of the window being created. For a list of the window styles that can be specified in dwStyle, see CreateWindow. 
+
+x
+
+Specifies the initial horizontal position of the window. For an overlapped or pop-up window, the x parameter is the initial x-coordinate of the window's upper-left corner, in screen coordinates. For a child window, x is the x-coordinate of the upper-left corner of the window relative to the upper-left corner of the parent window's client area. 
+If x is set to CW_USEDEFAULT, Windows selects the default position for the window's upper-left corner and ignores the y parameter. CW_USEDEFAULT is valid only for overlapped windows; if it is specified for a pop-up or child window, the x and y parameters are set to zero. 
+
+y
+
+Specifies the initial vertical position of the window. For an overlapped or pop-up window, the y parameter is the initial y-coordinate of the window's upper-left corner, in screen coordinates. For a child window, y is the initial y-coordinate of the upper-left corner of the child window relative to the upper-left corner of the parent window's client area. For a list box, y is the initial y-coordinate of the upper-left corner of the list box's client area relative to the upper-left corner of the parent window's client area. 
+
+If an overlapped window is created with the WS_VISIBLE style bit set and the x parameter is set to CW_USEDEFAULT, Windows ignores the y parameter. 
+
+nWidth
+
+Specifies the width, in device units, of the window. For overlapped windows, nWidth is the window's width, in screen coordinates, or CW_USEDEFAULT. If nWidth is CW_USEDEFAULT, Windows selects a default width and height for the window; the default width extends from the initial x-coordinates to the right edge of the screen; the default height extends from the initial y-coordinate to the top of the icon area. CW_USEDEFAULT is valid only for overlapped windows; if CW_USEDEFAULT is specified for a pop-up or child window, the nWidth and nHeight parameter are set to zero. 
+
+nHeight
+
+Specifies the height, in device units, of the window. For overlapped windows, nHeight is the window's height, in screen coordinates. If the nWidth parameter is set to CW_USEDEFAULT, Windows ignores nHeight. 
+
+hWndParent
+
+Identifies the parent or owner window of the window being created. A valid window handle must be supplied when a child window or an owned window is created. A child window is confined to the client area of its parent window. An owned window is an overlapped window that is destroyed when its owner window is destroyed or hidden when its owner is minimized; it is always displayed on top of its owner window. Although this parameter must specify a valid handle if the dwStyle parameter includes the WS_CHILD style, it is optional if dwStyle includes the WS_POPUP style. 
+
+hMenu
+
+Identifies a menu, or specifies a child-window identifier, depending on the window style. For an overlapped or pop-up window, hMenu identifies the menu to be used with the window; it can be NULL if the class menu is to be used. For a child window, hMenu specifies the child-window identifier, an integer value used by a dialog box control to notify its parent about events. The application determines the child-window identifier; it must be unique for all child windows with the same parent window. 
+
+hInstance
+
+Identifies the instance of the module to be associated with the window. 
+
+lpParam
+
+Points to a value passed to the window through the CREATESTRUCT structure referenced by the lParam parameter of the WM_CREATE message. If an application calls CreateWindow to create a multiple document interface client window, lpParam must point to a CLIENTCREATESTRUCT structure. 
+
+ 
+
+Return Values
+
+If the function succeeds, the return value is the handle to the new window.
+If the function fails, the return value is NULL. 
+
+Remarks
+
+The CreateWindowEx function sends WM_NCCREATE, WM_NCCALCSIZE, and WM_CREATE messages to the window being created. 
+For information about the window control classes, window styles, and control styles used with this function, see the description of the CreateWindow function. 
+Windows 95: The system can support a maximum of 16,364 window handles.
+
+See Also
+
+CLIENTCREATESTRUCT, CREATESTRUCT, CreateWindow, GlobalAddAtom, RegisterClass
+, SetWindowPos, WM_CREATE, WM_NCCALCSIZE, WM_NCCREATE, WM_PAINT, WM_PARENTNOTIFY
+(...)
+The LoadLibrary function maps the specified executable module into the address space of the calling process. 
+
+HINSTANCE LoadLibrary(
+
+    LPCTSTR lpLibFileName 	// address of filename of executable module 
+   );	
+ 
+
+Parameters
+
+lpLibFileName
+
+Points to a null-terminated string that names the executable module (either a .DLL or .EXE file). The name specified is the filename of the module and is not related to the name stored in the library module itself, as specified by the LIBRARY keyword in the module-definition (.DEF) file. 
+
+If the string specifies a path but the file does not exist in the specified directory, the function fails. 
+If a path is not specified and the filename extension is omitted, the default library extension .DLL is appended. However, the filename string can include a trailing point character (.) to indicate that the module name has no extension. When no path is specified, the function searches for the file in the following sequence: 
+
+1.	The directory from which the application loaded. 
+	2.	The current directory. 
+	3.	Windows 95: The Windows system directory. Use the GetSystemDirectory function to get the path of this directory.
+
+Windows NT: The 32-bit Windows system directory. Use the GetSystemDirectory function to get the path of this directory. The name of this directory is SYSTEM32.
+
+4.	Windows NT: The 16-bit Windows system directory. There is no Win32 function that obtains the path of this directory, but it is searched. The name of this directory is SYSTEM.
+	5.	The Windows directory. Use the GetWindowsDirectory function to get the path of this directory. 
+	6.	The directories that are listed in the PATH environment variable. 
+
+ 
+
+The first directory searched is the one directory containing the image file used to create the calling process (for more information, see the CreateProcess function). Doing this allows private dynamic-link library (DLL) files associated with a process to be found without adding the process's installed directory to the PATH environment variable. 
+Once the function obtains a fully qualified path to a library module file, the path is compared (case independently) to the full paths of library modules currently loaded into the calling process. These libraries include those loaded when the process was starting up as well as those previously loaded by LoadLibrary but not unloaded by FreeLibrary. If the path matches the path of an already loaded module, the function just increments the reference count for the module and returns the module handle for that library. 
+
+ 
+
+Return Values
+
+If the function succeeds, the return value is a handle to the module.
+If the function fails, the return value is NULL. To get extended error information, call GetLastError. 
+
+Remarks
+
+LoadLibrary can be used to map a DLL module and return a handle that can be used in GetProcAddress to get the address of a DLL function. LoadLibrary can also be used to map other executable modules. For example, the function can specify an .EXE file to get a handle that can be used in FindResource or LoadResource. 
+Module handles are not global or inheritable. A call to LoadLibrary by one process does not produce a handle that another process can use ¾ for example, in calling GetProcAddress. The other process must make its own call to LoadLibrary for the module before calling GetProcAddress. 
+
+If the module is a DLL not already mapped for the calling process, the system calls the DLL's DllEntryPoint function with the DLL_PROCESS_ATTACH value. If the DLL's entry-point function does not return TRUE, LoadLibrary fails and returns NULL. 
+Windows 95: If you are using LoadLibrary to load a module that contains a resource whose numeric identifier is greater than 0x7FFF, LoadLibrary fails. 
+
+See Also
+
+DllEntryPoint, FindResource, FreeLibrary, GetProcAddress, GetSystemDirectory, GetWindowsDirectory, LoadResource
+(...)

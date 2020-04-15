@@ -1,0 +1,10 @@
+Principal = 8, 17, 978, 505, Z, 22, 22, 586, 382, C
+modPastero = 368, 25, 1078, 535, 
+frmSearch = 66, 66, 1019, 349, C, 361, 127, 925, 487, C
+frmListaRegs = 0, 0, 0, 0, C, 88, 88, 652, 448, C
+frmOptions = 88, 88, 543, 438, C, 110, 110, 674, 470, C
+modTitulacion = 88, 88, 881, 473, 
+modApis = 110, 110, 903, 495, 
+modOpenySaveFilename = 0, 0, 1037, 273, 
+modFuncFileIO = 154, 154, 947, 539, 
+clsPropiedades = 0, 0, 706, 363, 

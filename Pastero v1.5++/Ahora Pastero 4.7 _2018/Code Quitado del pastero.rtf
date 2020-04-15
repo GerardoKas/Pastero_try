@@ -1,0 +1,71 @@
+{\rtf1\ansi\deff0{\fonttbl{\f0\fnil\fcharset0 MS Sans Serif;}}
+\viewkind4\uc1\pard\lang3082\f0\fs17 ((->Code Quitado del pastero.txt<-))
+\par <!: domingo, 03 de abril de 2016 A las 16:39:00 :!>
+\par 
+\par Function crearTitulo(texto As String)
+\par Dim tit As String
+\par 'comprobar puntuacion no posible
+\par Exit Function
+\par If Form1.TheText.Tag = "Nodo" Then Exit Function
+\par If fileWasOpened = True Then
+\par     crearTitulo = basename(savedFilename)
+\par     Exit Function
+\par End If
+\par tit = Left(texto, maxTitle)
+\par tit = limpiar(tit)
+\par p = InStr(1, tit, Chr(13), vbBinaryCompare)
+\par If (p > 0) Then
+\par tit = Left(tit, p - 1)
+\par End If
+\par tit = changeBadChars(tit)
+\par 
+\par fileName = tit & ".RichText"
+\par crearTitulo = fileName
+\par End Function
+\par 
+\par Function limpiar(texto As String)
+\par 'sacar enteres al principio y al final. por si el texto viene despues
+\par Dim cad As String
+\par cad = texto
+\par While (Left(cad, 2) = vbCrLf)
+\par cad = Right(cad, Len(cad) - 2)
+\par Wend
+\par While (Right(cad, 2) = vbCrLf)
+\par cad = Left(cad, Len(cad) - 2)
+\par Wend
+\par cad = Trim(cad)
+\par limpiar = cad
+\par End Function
+\par 
+\par 
+\par Function changeBadChars(texto As String)
+\par texto = Replace(texto, ":", "-")
+\par texto = Replace(texto, "?", "!")
+\par texto = Replace(texto, """", "'")
+\par texto = Replace(texto, "/", "-")
+\par texto = Replace(texto, "\\", "-")
+\par texto = Replace(texto, "|", "-")
+\par texto = Replace(texto, "<", "[")
+\par texto = Replace(texto, ">", "]")
+\par texto = Replace(texto, "*", "\'b7")
+\par changeBadChars = texto
+\par End Function
+\par 
+\par (...)------------------------------------------------------------------------------------------
+\par 
+\par 
+\par Private Sub TheText_Change()
+\par 'If TheText.Tag = "NoDo" Then Exit Sub
+\par 'If TheText.Text = "" Then
+\par 'txtTitulo = ""
+\par 'tellSaved 2
+\par 'Else
+\par 'txtTitulo = crearTitulo(TheText.Text)
+\par 'End If
+\par End Sub
+\par (...)
+\par 
+\par <<.FIN.>>
+\par 
+\par 
+\par }
